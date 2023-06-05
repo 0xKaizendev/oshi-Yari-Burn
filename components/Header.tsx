@@ -26,7 +26,7 @@ export default function Header({ }) {
   const [selectedNav, setSelectedNav] = useState('swap')
   return (
     <div className={`md:p-4 px-1 w-full flex justify-between items-center border-b-2 border-muted`}>
-      <Link className='flex md:w-1/4 items-end gap-2 justify-start  ' href='/'>
+      <Link className='flex lg:w-1/4 items-end gap-2 justify-start  ' href='/'>
         <Image src={logo} alt='yaris' height={40} width={40} />
         <h1 className='font-heading text-center md:text-3xl bg-gradient-to-r from-yellow-500 via-green-600 to-green-800 bg-clip-text text-transparent'>YARIS BURN</h1>
 
@@ -58,7 +58,7 @@ export default function Header({ }) {
             Vote
           </div>
             </div> */}
-        <div className={'flex md:w-1/4 justify-end items-center md:gap-4 gap-2'}>
+        <div className={'flex lg:w-1/4 justify-end items-center md:gap-4 gap-2'}>
           <ModeToggle />
           <div className='bg-muted p-2 rounded-xl'>
             {currentAccount !== null ? `${currentAccount.slice(0, 7)}...${currentAccount.slice(35)}` : (<Button className={`rounded-xl bg-blue-600 hover:bg-blue-700 relative `} onClick={connectWallet}>
