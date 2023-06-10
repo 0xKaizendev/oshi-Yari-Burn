@@ -1,16 +1,17 @@
-import { Button } from '@yaris/components/ui/button'
+import { Button,buttonVariants } from '@yaris/components/ui/button'
 import Image from 'next/image'
 import { FlameIcon,CoinsIcon, } from 'lucide-react'
 import Link from 'next/link'
+import { cn } from '@yaris/lib/utils'
 export default function Home() {
   return (
     <main className="h-screen max-h-screen h-min-screen select-none flex flex-col  items-center gap-6 pt-16 md:pt-48">
 
       <div className='flex flex-col  gap-3 md:gap-8 container  items-center justify-center md:px-24 '>
-        <h2 className='font-heading text-center md:text-6xl text-3xl bg-gradient-to-r from-yellow-500 via-green-600 to-green-800 bg-clip-text leading-normal text-transparent'>BURN YOUR ERC20 YARIS FOR <br className='hidden md:block' /> BRC20 </h2>
+        <h2 className='font-heading text-center md:text-6xl text-3xl bg-gradient-to-r from-[#e0c24c] via-[#54634c] to-green-800 bg-clip-text leading-normal text-transparent'>BURN YOUR ERC20 YARI FOR <br className='hidden md:block' /> BRC20 </h2>
         <p className='text-muted-foreground font-sans text-xl max-w-prose text-center'>  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et quaerat voluptatibus asperiores magnam,</p>
         <div className='mt-3'>
-          <Link className='h-12 py-2 px-4 inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-blue-600 hover:bg-blue-700 text-foreground' href={'/burn'} >
+          <Link className={cn(buttonVariants({variant:"outline"}))} href={'/burn'} >
             BURN YARIS
           </Link>
         </div>

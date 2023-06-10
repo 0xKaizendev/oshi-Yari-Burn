@@ -1,6 +1,6 @@
 import './globals.css'
 import { Toaster } from '@yaris/components/ui/toast'
-
+import { SiteFooter } from '@yaris/components/site-footer'
 import { cn } from "@yaris/lib/utils"
 import Header from '@yaris/components/Header'
 import Providers from '@yaris/components/Providers'
@@ -26,14 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(
-        "min-h-screen bg-background font-sans antialiased flex flex-col md:px-20",
+        "h-screen bg-background font-sans antialiased flex flex-col md:px-20",
         fontSans.variable,
         fontHeading.variable
       )}>
         <Providers>
         <Header />
         {children}
-        <Toaster position='bottom-right'/>
+        <Toaster position='top-right'/>
+        <SiteFooter/>
         </Providers>
 
     </body>

@@ -7,30 +7,28 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+
+  // directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+
+  // shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  address   String
-  user_name String?
-  email     String  @unique
-
-  name String?
-
-  posts Transaction[]
+  id           Int           @id @default(autoincrement())
+  address      String
+  transactions Transaction[]
 }
 
 model Transaction {
-  id Int @id @default(autoincrement())
-
-  from_address String
-  tx_hash      String
-  amount       String
-  timestamp    DateTime?
-  published    Boolean   @default(false)
-
-  author User @relation(fields: [authorId], references: [id])
-
-  authorId Int
+  id                 Int       @id @default(autoincrement())
+  from_address       String
+  tx_hash            String
+  amount             String
+  tape_route_address String
+  timestamp          DateTime?
+  completed          Boolean   @default(false)
+  user               User?     @relation(fields: [user_id], references: [id])
+  user_id            Int
 }

@@ -1,49 +1,57 @@
 "use client"
-import { useState, useEffect, createContext, ReactNode } from "react";
+import * as React from "react";
 import { toast } from "@yaris/components/ui/toast";
-
-import { MetaMaskInpageProvider } from "@metamask/providers";
-import { yarisAbi, yariAddress, burnerAddress, burnerApi } from '@yaris/lib/utils'
+import * as utils from '@yaris/lib/utils'
 import { ethers } from "ethers";
-import { type Contract } from "ethers";
+import * as types from "@yaris/types/types";
+import { useRouter } from 'next/navigation'
+import axios from "axios";
 interface TransactionProviderProps {
-    children: ReactNode
+    children: React.ReactNode
 };
-interface formDataProps {
-    tapeRouteAddress: string | undefined,
-    amount: number | undefined
-}
-interface TransactionContext {
-    currentAccount: string | null
-    connectWallet: () => void
-    approveToken: () => Promise<string | undefined>
-    burnToken: () => Promise<string | undefined>
-    isLoading: boolean,
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    formData: formDataProps
 
-}
-export const TransactionContext = createContext<TransactionContext>({
+
+
+export const TransactionContext = React.createContext<types.TransactionContextInterface>({
     currentAccount: null, connectWallet: () => { },
     isLoading: false,
-    approveToken: async () => undefined,
+    isPendingTransaction: false,
+    approveToken: async () => false,
     handleChange: async () => { },
-    burnToken: async () => undefined,
+    burnToken: async () => false,
     formData: {
         amount: undefined,
-        tapeRouteAddress: undefined
-    }
+        tape_route_address: undefined
+    },
 })
 
 export default function TransactionProvider({ children }: TransactionProviderProps) {
-    const [currentAccount, setCurrentAccount] = useState<null | string>(null)
-    const [isLoading, setisLoading] = useState<boolean>(false)
-    const [formData, setFormData] = useState<formDataProps>({
-        tapeRouteAddress: undefined,
+    const [currentAccount, setCurrentAccount] = React.useState<null | string>(null)
+    const [isLoading, setisLoading] = React.useState<boolean>(false)
+    const [isPendingTransaction, setIsPendingTransaction] = React.useState<boolean>(false)
+    const [formData, setFormData] = React.useState<types.FormDataProps>({
+        tape_route_address: undefined,
         amount: undefined,
     })
+    const router = useRouter()
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
+        if (e.target.name === 'amount') {
+            setFormData(prevState => ({ ...prevState, [e.target.name]: e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1') }))
+        } else {
+            const bitcoinAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/;
+            if (bitcoinAddressRegex.test(e.target.value)) {
+                setFormData(prevState => ({
+                    ...prevState,
+                    [e.target.name]: e.target.value
+                }));
+            } else {
+                toast({
+                    title: `Invalid Bitcoin address`,
+                    message: `Enter valid Bitcoin addres`,
+                    type: "error"
+                })
+            }
+        }
     }
 
     const connectWallet = async () => {
@@ -95,89 +103,125 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         }
     }
 
-    useEffect(() => {
-        checkIfWalletIsConnected()
-    }, [])
-    interface getContractProps {
-        name: "yari" | "burner"
-    }
-    const getContract = async ({ name }: getContractProps): Promise<Contract | undefined> => {
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        const signer = await provider.getSigner()
-        console.log(signer.address)
-        if (name === 'yari') {
-            const yariContract = new ethers.Contract(yariAddress, yarisAbi, signer)
-            return yariContract
-        } else if (name === 'burner') {
-            const burnerContract = new ethers.Contract(yariAddress, yarisAbi, signer)
-            return burnerContract
-        }
-        return undefined
 
-    }
-    const approveToken = async (): Promise<string | undefined> => {
+    React.useEffect(() => {
+        if (localStorage.getItem('transaction')) {
+            const unprocessedTransaction = JSON.parse(localStorage.getItem('transaction') as string) as types.FormDataProps & {
+                isPending: boolean
+            }
+            setFormData({ amount: unprocessedTransaction.amount, tape_route_address: unprocessedTransaction.tape_route_address })
+            setIsPendingTransaction(unprocessedTransaction.isPending)
+        }
+        checkIfWalletIsConnected()
+
+    }, [])
+
+    const approveToken = async (): Promise<boolean> => {
         try {
             const metamask = window.ethereum
-            if (!metamask) toast({
-                title: `Metamask not found`,
-                message: `Please install Metamask`,
-                type: "default"
-            })
-            const { amount, tapeRouteAddress } = formData
-            const yariContract = await getContract({ name: 'yari' })
-            const parsedAmount = ethers.parseEther("0.6")
-            if (yariContract) {
-                const balanceofZeroAddress = await yariContract.balanceOf("0xf1FCeD5B0475a935b49B95786aDBDA2d40794D2d")
-                console.log(balanceofZeroAddress)
-                const approveTx = await yariContract.approve(burnerAddress, parsedAmount) as string
-                return approveTx
+            if (!metamask) {
+                toast({
+                    title: `Metamask not found`,
+                    message: `Please install Metamask`,
+                    type: "error"
+                })
+                return false
             }
+            const { amount, tape_route_address } = formData
+            if (!amount || !tape_route_address) {
+                toast({
+                    title: `Invalid amount or address`,
+                    message: `Please install Metamask`,
+                    type: "error"
+                })
+                return false
+            }
+            const yariContract = await utils.getContract({ name: 'yari' })
+            const parsedAmount = ethers.parseEther(amount)
 
+            if (yariContract) {
+                await yariContract.approve(utils.burnerAddress, parsedAmount)
+                setIsPendingTransaction(true)
+                localStorage.setItem('transaction', JSON.stringify({ amount, tape_route_address, isPending: true }))
+                return true
+            }
+            return false
         } catch (error) {
+            console.log(error)
             toast({
                 title: `Error sending transaction`,
                 message: `Please try again later`,
                 type: "error"
             })
-            return undefined
+            return false
         }
 
     }
-
-    // const transaction = await ethers.getCon
     const burnToken = async () => {
         try {
             const metamask = window.ethereum
-            if (!metamask) toast({
-                title: `Metamask not found`,
-                message: `Please install Metamask`,
-                type: "default"
-            })
-
-            const { amount, tapeRouteAddress } = formData
-            const burner = await getContract({ name: 'burner' })
-            const parsedAmount = ethers.parseEther(amount?.toString()!)
-            if (burner) {
-                const burnTx = await burner.transferFrom(currentAccount, burnerApi, parsedAmount) as string
-
-                return burnTx
+            if (!metamask) {
+                toast({
+                    title: `Metamask not found`,
+                    message: `Please install Metamask`,
+                    type: "error"
+                })
+                return false
             }
 
-            return undefined
-        } catch (error) {
+            const { tape_route_address, amount } = formData
+            if (!amount || !tape_route_address) {
+                toast({
+                    title: `Invalid amount or address`,
+                    message: `Please install Metamask`,
+                    type: "error"
+                })
+                return false
+            }
+            const burner = await utils.getContract({ name: 'burner' })
+            const parsedAmount = ethers.parseEther(amount!)
+            if (burner) {
+                const tx_hash = await burner.burn(parsedAmount, utils.yariAddress)
+                await axios.post('/api/transactions', {
+                    tx_hash: tx_hash.hash,
+                    amount,
+                    tape_route_address,
+                    from_address: currentAccount
 
-             toast({
-                title: `Error sending transaction`,
-                message: `Please try again later`,
+
+                }, {
+                    headers: {
+                        Authorization: process.env.NEXT_PUBLIC_SECRET_HEADER
+                    }
+                })
+                const tx = JSON.parse(localStorage.getItem('transaction') as string) as types.FormDataProps
+                toast({
+                    title: `Burn success`,
+                    message: `Successfully burned ${tx.amount} YARI`,
+                    type: "success"
+                })
+                setIsPendingTransaction(false)
+                localStorage.removeItem('transaction')
+                return true
+            }
+
+            return false
+        } catch (error: any) {
+            const tx = JSON.parse(localStorage.getItem('transaction') as string) as types.FormDataProps
+            setIsPendingTransaction(false)
+            toast({
+                title: `Error burning ${tx.amount} YARI`,
+                message: `${error.reason}`,
                 type: "error"
             })
-            return undefined
+            localStorage.removeItem('transaction')
+            return false
         }
 
     }
     return (
         <TransactionContext.Provider value={
-            { currentAccount, connectWallet, approveToken, burnToken, handleChange, formData, isLoading }
+            { currentAccount, connectWallet, approveToken, burnToken, handleChange, formData, isLoading, isPendingTransaction }
         }>
             {children}
         </TransactionContext.Provider>
