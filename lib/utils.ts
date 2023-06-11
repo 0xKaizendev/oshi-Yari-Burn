@@ -1,5 +1,6 @@
 import { ContractProps } from "@yaris/types/types";
 import { ClassValue, clsx } from "clsx";
+import axios from "axios";
 import { ethers, type Contract } from "ethers";
 import { twMerge } from "tailwind-merge";
 import { getAbi } from "./get-abis";
@@ -29,3 +30,13 @@ export const getContract = async ({
     return burnerContract;
   }
 };
+export const getData= async ()=>{
+
+  const data = await fetch('http://localhost:3000/api/transactions',{
+      headers: {
+          "Content-Type": "application/json",
+          "Authorization":process.env.NEXT_PUBLIC_SECRET_HEADER!
+        },
+  })
+  return data.json()
+}
