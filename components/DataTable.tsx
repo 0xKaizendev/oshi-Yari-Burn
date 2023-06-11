@@ -26,21 +26,23 @@ import { Input } from "@yaris/components/ui/input"
 import { Label } from "@yaris/components/ui/label"
 import { Button } from "./ui/button";
 import axios from "axios";
+import { Transaction } from "@prisma/client";
 interface TableProps {
-    transactions: TransactionInterface[]
+    transactions: Transaction[]
 };
 
 export function DataTable({ transactions }: TableProps) {
     const [isLoading, setisLoading] = React.useState<boolean>(false)
     const router = useRouter()
-    const [selectedTransaction, setSelectedTransaction] = React.useState<TransactionInterface>({
-        id: undefined,
+    const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction>({
+        id: 0,
         tx_hash: "",
         amount: "",
         from_address: "",
         tape_route_address: "",
-        timestamp: undefined,
-        completed: undefined
+        timestamp: null,
+        completed: false,
+        user_id:0
     })
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>
     ) => {
