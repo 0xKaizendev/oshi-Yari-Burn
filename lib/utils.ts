@@ -36,7 +36,7 @@ export const getData= async ()=>{
       headers: {
           "Content-Type": "application/json",
           "Authorization":process.env.NEXT_PUBLIC_SECRET_HEADER!
-        },
+        }, cache:'no-store'
   })
   return data.json()
 }

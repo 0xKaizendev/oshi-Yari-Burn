@@ -33,6 +33,35 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         tape_route_address: undefined,
         amount: undefined,
     })
+    const checkChainIdAndMetamask=()=>{
+        const metamask = window.ethereum
+        if (!metamask) {
+            toast({
+                title: `Metamask not found`,
+                message: `Please install Metamask`,
+                type: "error"
+            })
+            return false
+        }
+        const chaindId=window.ethereum.networkVersion
+        if (chaindId!=="1") {
+                const chainId="0x16"
+            // Request to switch the chainId
+            window.ethereum.request({
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId }],
+            }).then((result) => {
+              // Check if the chain switch was successful
+              if (result) {
+                console.log("Chain switch successful!");
+              } else {
+                console.log("Chain switch failed.");
+              }
+            }).catch((error) => {
+              console.log("Error occurred while switching chain:", error);
+            });
+          }
+    }
     const router = useRouter()
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name === 'amount') {
@@ -57,16 +86,8 @@ export default function TransactionProvider({ children }: TransactionProviderPro
     const connectWallet = async () => {
         try {
             setisLoading(true)
-            const metamask = window.ethereum
-            if (!metamask) {
-                return toast({
-                    title: `Metamask not found`,
-                    message: `Please install Metamask`,
-                    type: "error"
-                })
-
-            }
-            const accounts = await metamask.request({ method: 'eth_requestAccounts' }) as string[]
+            checkChainIdAndMetamask()
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[]
             setCurrentAccount(accounts[0])
             setisLoading(false)
         } catch (error) {
@@ -116,6 +137,8 @@ export default function TransactionProvider({ children }: TransactionProviderPro
 
     }, [])
 
+
+  
     const approveToken = async (): Promise<boolean> => {
         try {
             const metamask = window.ethereum
