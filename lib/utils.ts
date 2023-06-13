@@ -32,7 +32,7 @@ export const getContract = async ({
 };
 export const getData= async ()=>{
 
-  const data = await fetch('http://localhost:3000/api/transactions',{
+  const data = await fetch('https://yari.vercel.app/api/transactions',{
       headers: {
           "Content-Type": "application/json",
           "Authorization":process.env.NEXT_PUBLIC_SECRET_HEADER!
