@@ -26,18 +26,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(
-        "h-screen bg-background font-sans antialiased flex flex-col md:px-20",
+        "h-screen bg-background font-sans antialiased flex flex-col justify-between md:px-20",
         fontSans.variable,
         fontHeading.variable
       )}>
         <Providers>
-        <Header />
-        {children}
-        <Toaster position='top-right'/>
-        <SiteFooter/>
+          <Header />
+          <main className='h-full flex flex-col justify-between'>
+            {children}
+            <Toaster position='top-right' />
+            <SiteFooter />
+          </main>
+
         </Providers>
 
-    </body>
+      </body>
     </html>
   )
 }

@@ -30,13 +30,14 @@ export const getContract = async ({
     return burnerContract;
   }
 };
-export const getData= async ()=>{
-
-  const data = await fetch('https://yari.vercel.app/api/transactions',{
-      headers: {
-          "Content-Type": "application/json",
-          "Authorization":process.env.NEXT_PUBLIC_SECRET_HEADER!
-        }, cache:'no-store'
-  })
-  return data.json()
-}
+export const getData = async () => {
+  const data = await fetch("https://yari.vercel.app/api/transactions", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: process.env.NEXT_PUBLIC_SECRET_HEADER!,
+    },
+    cache: "no-store",
+  });
+  return data.json();
+};

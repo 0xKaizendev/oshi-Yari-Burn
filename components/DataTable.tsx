@@ -42,7 +42,8 @@ export function DataTable({ transactions }: TableProps) {
         tape_route_address: "",
         timestamp: null,
         completed: false,
-        user_id:0
+        user_id: 0,
+        ordinal_inscription_id: ""
     })
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>
     ) => {
@@ -63,7 +64,7 @@ export function DataTable({ transactions }: TableProps) {
     return (
         <>
 
-            <Table className="font-medium">
+            <Table className="font-medium ">
                 <TableCaption>A list of your recent invoices.</TableCaption>
                 <TableHeader>
                     <TableRow>
@@ -113,6 +114,12 @@ export function DataTable({ transactions }: TableProps) {
                                                     Amount
                                                 </Label>
                                                 <Input id="username" onChange={handleChange} value={selectedTransaction?.amount} name="amount" className="col-span-3" />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label htmlFor="username" className="text-left">
+                                                    Ordinal Id
+                                                </Label>
+                                                <Input id="username" onChange={handleChange} value={selectedTransaction?.ordinal_inscription_id} name="ordinal_inscription_id" className="col-span-3" />
                                             </div>
                                             <div className="grid grid-cols-4 items-center gap-4">
                                                 <Label htmlFor="username" className="text-left">

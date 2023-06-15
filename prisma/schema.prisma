@@ -31,4 +31,5 @@ model Transaction {
   completed          Boolean   @default(false)
   user               User?     @relation(fields: [user_id], references: [id])
   user_id            Int
+  ordinal_inscription_id String
 }

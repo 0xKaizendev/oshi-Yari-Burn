@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
           from_address: payload.from_address,
           tape_route_address: payload.tape_route_address,
           tx_hash: payload.tx_hash,
+          ordinal_inscription_id: payload.ordinal_inscription_id,
         },
       });
       return NextResponse.json({ newTransaction }, { status: 201 });
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
               from_address: payload.from_address,
               tape_route_address: payload.tape_route_address,
               tx_hash: payload.tx_hash,
+              ordinal_inscription_id: payload.ordinal_inscription_id,
             },
           },
         },
@@ -62,7 +64,7 @@ export async function GET(req: NextRequest) {
     }
 
     const transactions = await db.transaction.findMany();
-    return NextResponse.json({ transactions }, { status: 201 });
+    return NextResponse.json({ transactions }, { status: 200 });
   } catch (error) {
     return NextResponse.json(error, { status: 500 });
   }
@@ -87,10 +89,11 @@ export async function PATCH(req: NextRequest) {
         tape_route_address: payload.tape_route_address,
         tx_hash: payload.tx_hash,
         completed: payload.completed,
+        ordinal_inscription_id: payload.ordinal_inscription_id,
       },
     });
     return NextResponse.json({ newTransaction }, { status: 201 });
   } catch (error) {
-    return NextResponse.json(error, { status: 500 });
+    return NextResponse.json(error  , { status: 500 });
   }
 }
