@@ -12,7 +12,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
     <footer className={cn(className)}>
       <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-        <Image src={logo} alt='yaris' height={40} width={40} className='rounded-xl ' />
+          <Image src={logo} alt='yaris' height={40} width={40} className='rounded-xl ' />
           <p className="text-center text-sm leading-loose md:text-left">
             Built by{" "}
             <a
@@ -23,15 +23,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             >
               0xZales
             </a>
-            . Hosted on{" "}
-            <a
-              href="https://vercel.com"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              Vercel 
-            </a>
+            .
             The source code is available on{" "}
             <a
               href={siteConfig.links.github}
@@ -44,8 +36,8 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
             .
           </p>
         </div>
-      <div className="flex items-center justify-end gap-4">
-      <Link
+        <div className="flex items-center justify-end gap-4">
+          <Link
             href={siteConfig.links.discord}
             target="_blank"
             rel="noreferrer"
@@ -63,7 +55,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               <span className="sr-only">Discord</span>
             </div>
           </Link>
-        <Link
+          <Link
             href={siteConfig.links.telegram}
             target="_blank"
             rel="noreferrer"
@@ -81,7 +73,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               <span className="sr-only">Telegram</span>
             </div>
           </Link>
-        <Link
+          <Link
             href={siteConfig.links.github}
             target="_blank"
             rel="noreferrer"
@@ -99,7 +91,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               <span className="sr-only">Twitter</span>
             </div>
           </Link>
-      </div>
+        </div>
       </div>
     </footer>
   )

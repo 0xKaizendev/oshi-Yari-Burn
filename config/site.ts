@@ -3,7 +3,7 @@ import { SiteConfig } from "@yaris/types"
 export const siteConfig: SiteConfig = {
   name: "Yari burn",
   description:
-    "An open source application built using the new router, server components and everything new in Next.js 13.",
+    "The Yari Token Burning Interface.",
   url: "https://yari.vercel.app",
   ogImage: "https://yari.vercel.app/og.jpg",
   links: {

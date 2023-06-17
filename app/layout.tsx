@@ -66,19 +66,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(
-        "h-screen bg-background font-sans antialiased flex flex-col justify-between md:px-20",
+        "bg-background font-sans antialiased flex flex-col h-screen gap-36  md:px-20",
         fontSans.variable,
         fontHeading.variable
       )}>
-        <Providers>
+        <Providers >
+          <main className='flex flex-col h-screen gap-10 justify-between'>
           <Header />
-          <main className='h-full flex flex-col justify-between'>
             {children}
             <Toaster position='top-right' />
             <SiteFooter />
           </main>
 
         </Providers>
+        {/* <SiteFooter /> */}
 
       </body>
     </html>
