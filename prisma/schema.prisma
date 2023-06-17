@@ -22,14 +22,20 @@ model User {
 }
 
 model Transaction {
-  id                 Int       @id @default(autoincrement())
-  from_address       String
-  tx_hash            String
-  amount             String
-  tape_route_address String
-  timestamp          DateTime?
-  completed          Boolean   @default(false)
-  user               User?     @relation(fields: [user_id], references: [id])
-  user_id            Int
-  ordinal_inscription_id String
+  id                     Int               @id @default(autoincrement())
+  from_address           String
+  tx_hash                String?
+  amount                 String
+  taproot_address        String?
+  timestamp              DateTime?
+  completed              Boolean           @default(false)
+  user                   User?             @relation(fields: [user_id], references: [id])
+  user_id                Int
+  ordinal_inscription_id String?
+  status                 TransactionStatus @default(APPROVED)
+}
+
+enum TransactionStatus {
+  APPROVED
+  BURNED
 }

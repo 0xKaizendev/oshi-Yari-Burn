@@ -46,5 +46,30 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "db3a543f-8164-4ca7-9429-4129f91b606a",
+    "colId": "history",
+    "containerId": "",
+    "name": "http://localhost:3000/api/save Copy Copy",
+    "url": "http://localhost:3000/api/transactions?id=8",
+    "method": "DELETE",
+    "sortNum": 0,
+    "created": "2023-06-07T10:55:03.689Z",
+    "modified": "2023-06-16T20:17:50.094Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "IgjAR/ifUzE5RjQZszOGAYpNlaQMSSB1Eg5TWojchmnjDXfYuRDn81agtti7DRDX"
+      }
+    ],
+    "params": [
+      {
+        "name": "id",
+        "value": "8",
+        "isPath": false
+      }
+    ],
+    "tests": []
   }
 ]

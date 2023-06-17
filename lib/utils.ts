@@ -1,9 +1,9 @@
 import { ContractProps } from "@yaris/types/types";
 import { ClassValue, clsx } from "clsx";
-import axios from "axios";
 import { ethers, type Contract } from "ethers";
 import { twMerge } from "tailwind-merge";
 import { getAbi } from "./get-abis";
+import { NextRequest, NextResponse } from "next/server";
 export const yariAddress = "0xF32dc7a09aDC261230Cf7Ef81a4880886Da44100";
 // export const yariAddress = "0x31c2da967a284A00999ab9fe49b5CFd580c2d4E9";
 export const burnerAddress = "0x129DE6E64D14C03f65FC013f01cF2d06500356A2";
@@ -11,6 +11,7 @@ export const burnerAddress = "0x129DE6E64D14C03f65FC013f01cF2d06500356A2";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
 export const getContract = async ({
   name,
 }: ContractProps): Promise<Contract> => {
@@ -30,8 +31,9 @@ export const getContract = async ({
     return burnerContract;
   }
 };
+// https://yari.vercel.app/api/transactions
 export const getData = async () => {
-  const data = await fetch("https://yari.vercel.app/api/transactions", {
+  const data = await fetch("http://localhost:3000/api/transactions", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -41,3 +43,9 @@ export const getData = async () => {
   });
   return data.json();
 };
+export function authenticate(req: NextRequest) {
+  const secret = process.env.NEXT_PUBLIC_SECRET_HEADER;
+  if (secret !== req.headers.get("authorization")) {
+    return NextResponse.json({ message: "Not authenticated" }, { status: 403 });
+  }
+}

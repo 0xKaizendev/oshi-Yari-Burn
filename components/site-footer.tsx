@@ -5,7 +5,6 @@ import { siteConfig } from "@yaris/config/site"
 import { cn } from "@yaris/lib/utils"
 import logo from '@yaris/assets/logo.png'
 import { Icons } from "./icons";
-import { ModeToggle } from "@yaris/components/mode-toggle"
 import { buttonVariants } from "./ui/button";
 
 export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
@@ -17,12 +16,12 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
           <p className="text-center text-sm leading-loose md:text-left">
             Built by{" "}
             <a
-              href={siteConfig.links.twitter}
+              href={'https://twitter.com/0xzales'}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              shadcn
+              0xZales
             </a>
             . Hosted on{" "}
             <a
@@ -31,18 +30,9 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              Vercel
+              Vercel 
             </a>
-            . Illustrations by{" "}
-            <a
-              href="https://popsy.co"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              Popsy
-            </a>
-            . The source code is available on{" "}
+            The source code is available on{" "}
             <a
               href={siteConfig.links.github}
               target="_blank"
@@ -56,7 +46,7 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
         </div>
       <div className="flex items-center justify-end gap-4">
       <Link
-            href={siteConfig.links.github}
+            href={siteConfig.links.discord}
             target="_blank"
             rel="noreferrer"
           >
@@ -69,12 +59,12 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
                 "w-9 px-0"
               )}
             >
-              <Icons.gitHub className="h-5 w-5" />
-              <span className="sr-only">GitHub</span>
+              <Icons.discord className="h-5 w-5" />
+              <span className="sr-only">Discord</span>
             </div>
           </Link>
         <Link
-            href={siteConfig.links.github}
+            href={siteConfig.links.telegram}
             target="_blank"
             rel="noreferrer"
           >
