@@ -16,7 +16,6 @@ export default withAuth(
     const isAuthPage = pathname.startsWith("/login");
     const isAdminPage = pathname.startsWith("/admin");
 
-    const sensitiveRoutes = ["/admin"];
 
     if (isAdminPage) {
       if (isAuth) return NextResponse.next();

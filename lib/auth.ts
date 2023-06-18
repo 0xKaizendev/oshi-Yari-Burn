@@ -31,12 +31,12 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    jwt(params) {
-      if (params.user?.name) {
-        params.token.name = params.user.name;
-      }
-      return params.token;
-    },
+    // jwt(params) {
+    //   if (params.user?.name) {
+    //     params.token.name = params.user.name;
+    //   }
+    //   return params.token;
+    // },
     redirect() {
       return "/admin";
     },
