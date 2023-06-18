@@ -14,26 +14,15 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <Image src={logo} alt='yaris' height={40} width={40} className='rounded-xl ' />
           <p className="text-center text-sm leading-loose md:text-left">
-            Built by{" "}
+          Powered by{" "}
             <a
-              href={'https://twitter.com/0xzales'}
+              href={'https://oshi.fi/'}
               target="_blank"
               rel="noreferrer"
               className="font-medium underline underline-offset-4"
             >
-              0xZales
+              oshi.finance
             </a>
-            .
-            The source code is available on{" "}
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              GitHub
-            </a>
-            .
           </p>
         </div>
         <div className="flex items-center justify-end gap-4">

@@ -35,7 +35,7 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         ordinal_inscription_id: undefined,
     })
     const checkChainIdAndMetamask = async (): Promise<boolean> => {
-        const metamask= window.ethereum
+        const metamask = window.ethereum
         if (!metamask) {
             toast({
                 title: `Metamask not found`,
@@ -81,9 +81,11 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         }
     }
 
+
+
     const connectWallet = async () => {
         try {
-            const metamask= window.ethereum
+            const metamask = window.ethereum
             if (!metamask) {
                 toast({
                     title: `Metamask not found`,
@@ -93,11 +95,12 @@ export default function TransactionProvider({ children }: TransactionProviderPro
                 return false
             }
             setisLoading(true)
-            // checkChainIdAndMetamask()
+            await checkChainIdAndMetamask()
             const accounts = await metamask.request({ method: 'eth_requestAccounts' }) as string[]
             setCurrentAccount(accounts[0])
-            return true
+            // const message=utils.createSiweMessage(currentAccount!,"Hello")
             setisLoading(false)
+            return true
         } catch (error) {
             setisLoading(false)
             toast({
@@ -108,16 +111,18 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             return
         }
     }
-    const checkIfWalletIsConnected = async (): Promise<boolean> => {
-        const metamask= window.ethereum
+    const checkIfWalletIsConnected = async () => {
+        const metamask = window.ethereum
         if (!metamask) {
             return false
         }
         const accounts = await metamask.request({ method: "eth_accounts" }) as string[]
         if (accounts.length) {
+            await checkChainIdAndMetamask()
             setCurrentAccount(accounts[0])
             return true
         }
+        connectWallet()
         return false
     }
 
@@ -133,10 +138,9 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             e.preventDefault()
             const isConnected = await checkIfWalletIsConnected()
             if (!isConnected) {
-                const connection = await connectWallet()
-                if (!connection) return false
+                await connectWallet()
+
             }
-            // await checkChainIdAndMetamask()
             const yariContract = await utils.getContract({ name: 'yari' })
             const { amount } = formData
 
@@ -164,10 +168,10 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         }
 
     }
-    const burnToken =async (e: React.FormEvent<HTMLFormElement>) => {
+    const burnToken = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
             e.preventDefault()
-            const metamask= window.ethereum
+            const metamask = window.ethereum
             if (!metamask) {
                 toast({
                     title: `Metamask not found`,
@@ -175,6 +179,11 @@ export default function TransactionProvider({ children }: TransactionProviderPro
                     type: "error"
                 })
                 return false
+            }
+            const isConnected = await checkIfWalletIsConnected()
+            if (!isConnected) {
+                await connectWallet()
+
             }
 
             const { taproot_address, amount, ordinal_inscription_id } = formData

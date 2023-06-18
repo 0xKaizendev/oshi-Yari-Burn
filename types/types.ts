@@ -1,14 +1,3 @@
-export interface TransactionInterface {
-  id?: number;
-  user_id?: number;
-  tx_hash: string;
-  amount: string;
-  from_address: string;
-  tape_route_address: string;
-  timestamp?: null;
-  completed?: boolean;
-}
-
 export interface FormDataProps {
   taproot_address: string | undefined;
   amount: string | undefined;

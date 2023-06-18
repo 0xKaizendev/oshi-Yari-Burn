@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticate } from "@yaris/lib/utils";
 import { db } from "@yaris/lib/db";
-import { StatusCodes } from 'http-status-codes';
+import { StatusCodes } from "http-status-codes";
 import { transactionSchema } from "@yaris/lib/validation";
 import { z } from "zod";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
     const json = await req.json();
     const payload = transactionSchema.parse(json);
-    authenticate(req);
+    const isAdmin = await authenticate(req);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Not authenticated" },
+        { status: 403 }
+      );
+    }
 
     const userExist = await db.user.findFirst({
       where: {
@@ -17,20 +23,22 @@ export async function POST(req: NextRequest) {
       },
     });
     if (userExist) {
-      const newTransaction =  await db.$transaction([db.user.create({
-        data: {
-          address: payload.from_address,
-          transactions: {
-            create: {
-              amount: payload.amount,
-              from_address: payload.from_address,
-              taproot_address: payload.taproot_address,
-              tx_hash: payload.tx_hash,
-              ordinal_inscription_id: payload.ordinal_inscription_id,
+      const newTransaction = await db.$transaction([
+        db.user.create({
+          data: {
+            address: payload.from_address,
+            transactions: {
+              create: {
+                amount: payload.amount,
+                from_address: payload.from_address,
+                taproot_address: payload.taproot_address,
+                tx_hash: payload.tx_hash,
+                ordinal_inscription_id: payload.ordinal_inscription_id,
+              },
             },
           },
-        },
-      })]);
+        }),
+      ]);
       return NextResponse.json({ newTransaction }, { status: 201 });
     } else {
       const newTransaction = await db.user.create({
@@ -49,7 +57,7 @@ export async function POST(req: NextRequest) {
       });
       return NextResponse.json({ newTransaction }, { status: 201 });
     }
-  } catch (error:any) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ message: error.issues }, { status: 400 });
     } else {
@@ -59,11 +67,16 @@ export async function POST(req: NextRequest) {
 }
 export async function GET(req: NextRequest) {
   try {
-    authenticate(req);
+    const isAdmin = await authenticate(req);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Not authenticated" },
+        { status: 403 }
+      );
+    }
 
     const transactions = await db.transaction.findMany();
     return NextResponse.json({ transactions }, { status: StatusCodes.OK });
-
   } catch (error) {
     return NextResponse.json(error, { status: 500 });
   }
@@ -72,7 +85,13 @@ export async function PATCH(req: NextRequest) {
   try {
     const json = await req.json();
     const payload = transactionSchema.parse(json);
-    authenticate(req);
+    const isAdmin = await authenticate(req);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Not authenticated" },
+        { status: 403 }
+      );
+    }
 
     const newTransaction = await db.transaction.update({
       where: { id: payload.id },
@@ -86,11 +105,14 @@ export async function PATCH(req: NextRequest) {
       },
     });
     return NextResponse.json({ newTransaction }, { status: 201 });
-  } catch (error:any) {
+  } catch (error: any) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ message: error.message }, { status: 400 });
     } else {
-      return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 }
+      );
     }
   }
 }
@@ -99,7 +121,13 @@ export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const transactionId = searchParams.get("id");
-    authenticate(req);
+    const isAdmin = await authenticate(req);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { message: "Not authenticated" },
+        { status: 403 }
+      );
+    }
     if (!transactionId) {
       return NextResponse.json(
         { error: "Provide transaction id" },

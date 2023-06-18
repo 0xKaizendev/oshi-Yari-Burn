@@ -4,12 +4,10 @@ import { TransactionContext } from '@yaris/context/TransactionContext';
 import { useContext } from 'react';
 import { LucideLoader2 } from 'lucide-react';
 import { Button } from '@yaris/components/ui/button';
-import { useRouter } from 'next/navigation'
 export default function Page({ }) {
-    const router = useRouter()
     const { burnToken, isLoadingTransaction, handleChange, formData,  } = useContext(TransactionContext)
     return (
-        <div className='w-full h-screen flex flex-col  items-center pt-24'>
+        <div className='w-full  flex flex-col  items-center pt-24'>
             <div className='rounded-xl flex flex-col justify-center items-center w-full md:w-8/12 lg:w-3/12 border-1 px-4 py-6 bg-muted gap-5'>
                 <form className='rounded-xl flex flex-col justify-center items-center w-full  gap-5' onSubmit={(e) => burnToken(e)}>
 

@@ -4,10 +4,11 @@ import { siteConfig } from "@yaris/config/site"
 
 import { SiteFooter } from '@yaris/components/site-footer'
 import { cn } from "@yaris/lib/utils"
-import Header from '@yaris/components/Header'
+
 import Providers from '@yaris/components/Providers'
 import { Inter as FontSans } from "next/font/google"
 import localFont from "next/font/local"
+import SignInButton from '@yaris/components/SignInButton'
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -66,13 +67,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(
-        "bg-background font-sans antialiased flex flex-col h-screen gap-36  md:px-20",
+        "bg-backgrosund font-sans antialiased flex flex-col  gap-36  md:px-20 ",
         fontSans.variable,
         fontHeading.variable
       )}>
         <Providers >
           <main className='flex flex-col h-screen gap-10 justify-between'>
-          <Header />
+          {/* <Header >
+            <SignInButton/>
+        </Header>  */}
             {children}
             <Toaster position='top-right' />
             <SiteFooter />
