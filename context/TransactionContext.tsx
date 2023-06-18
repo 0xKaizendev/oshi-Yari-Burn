@@ -158,7 +158,6 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             return false
         } catch (error) {
             setIsLoadingTransaction(false)
-            console.log(error)
             toast({
                 title: `Error sending transaction`,
                 message: `Please try again later`,
@@ -219,7 +218,6 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             setIsLoadingTransaction(false)
             return false
         } catch (error: any) {
-            console.log(error)
             setIsLoadingTransaction(false)
             toast({
                 title: `Error sending transaction`,
