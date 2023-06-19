@@ -6,10 +6,10 @@ import { getAbi } from "./get-abis";
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { Transaction } from "@prisma/client";
-export const yariAddress = "0xF32dc7a09aDC261230Cf7Ef81a4880886Da44100";
-// export const yariAddress = "0x31c2da967a284A00999ab9fe49b5CFd580c2d4E9";
-export const burnerAddress = "0x129DE6E64D14C03f65FC013f01cF2d06500356A2";
-//  const burnerAddress = "0x31c2da967a284A00999ab9fe49b5CFd580c2d4E9";
+// export const yariAddress = "0xF32dc7a09aDC261230Cf7Ef81a4880886Da44100";
+export const yariAddress = "0x31c2da967a284a00999ab9fe49b5cfd580c2d4e9";
+// export const burnerAddress = "0x129DE6E64D14C03f65FC013f01cF2d06500356A2";
+ const burnerAddress = "0xFCb69C821b499d06a295eE2f19A2F2F70E1d8Bcb";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -34,7 +34,7 @@ export const getContract = async ({
   }
 };
 export const getData = async () => {
-  const data = await fetch("https://yari.vercel.app/api/transactions", {
+  const data = await fetch("/api/transactions", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
