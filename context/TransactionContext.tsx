@@ -59,20 +59,6 @@ export default function TransactionProvider({ children }: TransactionProviderPro
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name === 'amount') {
             setFormData(prevState => ({ ...prevState, [e.target.name]: e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1') }))
-        } else if (e.target.name === 'tape_route_address') {
-            const bitcoinAddressRegex = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/;
-            if (bitcoinAddressRegex.test(e.target.value)) {
-                setFormData(prevState => ({
-                    ...prevState,
-                    [e.target.name]: e.target.value
-                }));
-            } else {
-                toast({
-                    title: `Invalid Bitcoin address`,
-                    message: `Enter valid Bitcoin addres`,
-                    type: "error"
-                })
-            }
         } else {
             setFormData(prevState => ({
                 ...prevState,
@@ -98,7 +84,6 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             await checkChainIdAndMetamask()
             const accounts = await metamask.request({ method: 'eth_requestAccounts' }) as string[]
             setCurrentAccount(accounts[0])
-            // const message=utils.createSiweMessage(currentAccount!,"Hello")
             setisLoading(false)
             return true
         } catch (error) {
