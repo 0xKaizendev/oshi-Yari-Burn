@@ -34,7 +34,7 @@ export const getContract = async ({
   }
 };
 export const getData = async () => {
-  const data = await fetch("/api/transactions", {
+  const data = await fetch("https://yari.vercel.app/api/transactions", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
