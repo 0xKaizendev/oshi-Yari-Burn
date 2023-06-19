@@ -7,7 +7,9 @@ const nextConfig = {
                 hostname: 'tailwindui.com'
             }
         ]
-    }
+    },   experimental: {
+    appDir: true,
+  },
 }
 
 module.exports = nextConfig
