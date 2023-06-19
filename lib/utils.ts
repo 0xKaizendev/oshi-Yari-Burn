@@ -34,7 +34,7 @@ export const getContract = async ({
   }
 };
 export const getData = async () => {
-  const data = await fetch("http://localhost:3000/api/transactions", {
+  const data = await fetch("/api/transactions", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
