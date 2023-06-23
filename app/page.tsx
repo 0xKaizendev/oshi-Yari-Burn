@@ -29,6 +29,7 @@ export default function Home() {
       </div>
       <form className='mt-3 rounded-xl flex flex-col justify-center items-center w-full md:w-8/12 lg:w-5/12 border-1 px-4 md:px-0 gap-5 ' onSubmit={approveToken}>
         <Input placeholder='Amount to burn' className='p-7 ' value={formData.amount} type='text' name='amount' onChange={handleChange} required />
+        <a href="/how-to-make-transfer-inscription" className=' w-full text-right text-sm font-semibold underline underline-offset-4'>How to make transfer inscritpion?</a>
         <Button className='w-full  relative bg-gradient-to-r  from-green-600 to-green-800' type='submit'>
           <span className={`${isLoadingTransaction ? "text-primary hover:text-primary/90" : null}`}> Approve</span>
           {isLoadingTransaction ? <LucideLoader2 className='animate-spin absolute' /> : null}

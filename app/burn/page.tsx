@@ -14,6 +14,7 @@ export default function Page({ }) {
                     <Input placeholder='Amount to burn' className='p-7 ' value={formData.amount} type='text' name='amount' disabled />
                     <Input placeholder='Taproot Address' className='p-7' value={formData.taproot_address} type='text' onChange={handleChange} name='tape_route_address' required />
                     <Input placeholder='Transfer Inscriptions Id' className='p-7' value={formData.ordinal_inscription_id} type='text' onChange={handleChange} name='ordinal_inscription_id' required />
+                    <a href="/how-to-make-transfer-inscription" className=' w-full text-right text-sm font-semibold underline underline-offset-4'>How to make transfer inscritpion?</a>
                     <Button className='w-full ' variant={'destructive'} >
                     <span className={`${isLoadingTransaction ? "text-destructive hover:text-destructive/90" : null}`}> Burn</span>
                     {isLoadingTransaction ? <LucideLoader2 className='animate-spin absolute' /> : null}
