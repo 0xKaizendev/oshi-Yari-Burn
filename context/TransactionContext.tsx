@@ -20,7 +20,7 @@ export const TransactionContext = React.createContext<types.TransactionContextIn
 
 export default function TransactionProvider({ children }: TransactionProviderProps) {
     const address = useAddress();
-    const { contract } = useContract("0xF32dc7a09aDC261230Cf7Ef81a4880886Da44100", "token")
+    const { contract } = useContract("0x31c2da967a284a00999ab9fe49b5cfd580c2d4e9", "token")
     const connectWithMetamask = useMetamask()
     const [isLoading, setisLoading] = React.useState<boolean>(false)
     const [formData, setFormData] = React.useState<types.FormDataProps>({
@@ -77,6 +77,7 @@ export default function TransactionProvider({ children }: TransactionProviderPro
         }
 
     }
+
     return (
         <TransactionContext.Provider value={
             { bridgeToken, handleChange, formData, isLoading }

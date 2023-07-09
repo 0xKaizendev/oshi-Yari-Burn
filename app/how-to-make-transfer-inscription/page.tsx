@@ -1,9 +1,4 @@
 import React from 'react';
-import inscribe from '@yaris/assets/inscribe1.png'
-import Image from 'next/image'
-interface pageProps {
-};
-
 export default function page({ }) {
     return (
         <div className='  flex flex-col   pt-16 gap-4 container text-left'>

@@ -9,7 +9,7 @@ interface ProviderProps {
 
 export default function Providers({ children }: ProviderProps) {
     return (
-        <ThirdwebProvider activeChain={Sepolia} supportedWallets={[metamaskWallet()]} autoConnect={true}>
+        <ThirdwebProvider activeChain={Ethereum} supportedWallets={[metamaskWallet()]} autoConnect={true}>
             <TransactionProvider>
                 {children}
             </TransactionProvider>
