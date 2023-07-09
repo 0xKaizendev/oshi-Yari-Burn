@@ -1,4 +1,4 @@
-import { SiteConfig } from "@yaris/types";
+import { SiteConfig } from "@yaris/types/types";
 
 export const siteConfig: SiteConfig = {
   name: "Yari burn",

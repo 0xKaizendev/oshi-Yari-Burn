@@ -1,22 +1,16 @@
 "use client"
 import * as React from "react";
 import { toast } from "@yaris/components/ui/toast";
-import * as utils from '@yaris/lib/utils'
-import { ethers } from "ethers";
 import * as types from "@yaris/types/types";
-import { useRouter } from 'next/navigation'
 import axios from "axios";
-import { ContractTransactionResponse } from "ethers";
+import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 interface TransactionProviderProps {
     children: React.ReactNode
 };
 export const TransactionContext = React.createContext<types.TransactionContextInterface>({
-    currentAccount: null, connectWallet: () => { },
     isLoading: false,
-    isLoadingTransaction: false,
-    approveToken: async () => false,
+    bridgeToken: async () => false,
     handleChange: async () => { },
-    burnToken: async () => false,
     formData: {
         amount: undefined,
         taproot_address: undefined,
@@ -25,37 +19,18 @@ export const TransactionContext = React.createContext<types.TransactionContextIn
 })
 
 export default function TransactionProvider({ children }: TransactionProviderProps) {
-    const [currentAccount, setCurrentAccount] = React.useState<null | string>(null)
+    const address = useAddress();
+    const { contract } = useContract("0xF32dc7a09aDC261230Cf7Ef81a4880886Da44100", "token")
+    const connectWithMetamask = useMetamask()
     const [isLoading, setisLoading] = React.useState<boolean>(false)
-    const [isLoadingTransaction, setIsLoadingTransaction] = React.useState<boolean>(false)
-
     const [formData, setFormData] = React.useState<types.FormDataProps>({
         taproot_address: undefined,
         amount: undefined,
         ordinal_inscription_id: undefined,
     })
-    const checkChainIdAndMetamask = async (): Promise<boolean> => {
-        const metamask = window.ethereum
-        if (!metamask) {
-            toast({
-                title: `Metamask not found`,
-                message: `Please install Metamask`,
-                type: "error"
-            })
-            return false
-        }
-        const chainId = await metamask.request({ method: 'eth_chainId' });
-        if (chainId !== "0x1") {
-            // Request to switch the chainId
-            await metamask.request({
-                method: "wallet_switchEthereumChain",
-                params: [{ chainId: "0x1" }],
-            })
-            return true
-        }
-        return true
-    }
-    const router = useRouter()
+    React.useEffect(()=>{
+        if(!address) connectWithMetamask()
+    })
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name === 'amount') {
             setFormData(prevState => ({ ...prevState, [e.target.name]: e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1') }))
@@ -66,162 +41,48 @@ export default function TransactionProvider({ children }: TransactionProviderPro
             }));
         }
     }
-
-
-
-    const connectWallet = async () => {
+    const bridgeToken = async (e: React.FormEvent<HTMLFormElement>): Promise<boolean> => {
         try {
-            const metamask = window.ethereum
-            if (!metamask) {
-                toast({
-                    title: `Metamask not found`,
-                    message: `Please install it`,
-                    type: "error"
-                })
-                return false
-            }
+            e.preventDefault()
             setisLoading(true)
-            await checkChainIdAndMetamask()
-            const accounts = await metamask.request({ method: 'eth_requestAccounts' }) as string[]
-            setCurrentAccount(accounts[0])
-            setisLoading(false)
-            return true
-        } catch (error) {
-            setisLoading(false)
-            toast({
-                title: `Error connecting wallet`,
-                message: `Please try again later`,
-                type: "error"
-            })
-            return
-        }
-    }
-    const checkIfWalletIsConnected = async () => {
-        const metamask = window.ethereum
-        if (!metamask) {
-            return false
-        }
-        const accounts = await metamask.request({ method: "eth_accounts" }) as string[]
-        if (accounts.length) {
-            await checkChainIdAndMetamask()
-            setCurrentAccount(accounts[0])
-            return true
-        }
-        connectWallet()
-        return false
-    }
-
-
-    React.useEffect(() => {
-        checkIfWalletIsConnected()
-    }, [])
-
-
-
-    const approveToken = async (e: React.FormEvent<HTMLFormElement>): Promise<boolean> => {
-        try {
-            e.preventDefault()
-            const isConnected = await checkIfWalletIsConnected()
-            if (!isConnected) {
-                await connectWallet()
-
-            }
-            const yariContract = await utils.getContract({ name: 'yari' })
-            const { amount } = formData
-
-            const parsedAmount = ethers.parseEther(amount!)
-            if (yariContract) {
-                setIsLoadingTransaction(true)
-                const approveTonen: ContractTransactionResponse = await yariContract.approve(utils.burnerAddress, parsedAmount)
-                await approveTonen.wait(2)
-                localStorage.setItem('pendingTransaction', JSON.stringify({ amount }))
-                setIsLoadingTransaction(false)
-                router.push('/burn')
-                return true
-            }
-            setIsLoadingTransaction(false)
-            return false
-        } catch (error) {
-            setIsLoadingTransaction(false)
-            toast({
-                title: `Error sending transaction`,
-                message: `Please try again later`,
-                type: "error"
-            })
-            return false
-        }
-
-    }
-    const burnToken = async (e: React.FormEvent<HTMLFormElement>) => {
-        try {
-            e.preventDefault()
-            const metamask = window.ethereum
-            if (!metamask) {
-                toast({
-                    title: `Metamask not found`,
-                    message: `Please install Metamask`,
-                    type: "error"
-                })
-                return false
-            }
-            const isConnected = await checkIfWalletIsConnected()
-            if (!isConnected) {
-                await connectWallet()
-
-            }
-
             const { taproot_address, amount, ordinal_inscription_id } = formData
-            const data = JSON.parse(localStorage.getItem('pendingTransaction') as string)
-            // as Transaction
-            const burner = await utils.getContract({ name: 'burner' })
-            const parsedAmount = ethers.parseEther(amount || data.amount)
-            if (burner) {
-                setIsLoadingTransaction(true)
-                const tx: ContractTransactionResponse = await burner.burn(parsedAmount, utils.yariAddress)
-                await tx.wait(2)
-                await axios.post('/api/transactions', {
-                    tx_hash: tx.hash,
-                    amount: amount,
-                    taproot_address: taproot_address,
-                    from_address: currentAccount,
-                    ordinal_inscription_id: ordinal_inscription_id,
-                }, {
-                    headers: {
-                        Authorization: process.env.NEXT_PUBLIC_SECRET_HEADER
-                    }
-                })
-                toast({
-                    title: `Burn success`,
-                    message: `Successfully burned YARI`,
-                    type: "success"
-                })
-                setIsLoadingTransaction(false)
-                localStorage.removeItem('transaction')
-                router.refresh()
-                return true
+           const burn = await contract?.erc20.burn(amount!)
+           const tx_hash=burn?.receipt.transactionHash
+           await axios.post('/api/transactions', {
+            tx_hash,
+            amount: amount,
+            taproot_address: taproot_address,
+            from_address: address,
+            ordinal_inscription_id: ordinal_inscription_id,
+        }, {
+            headers: {
+                Authorization: process.env.NEXT_PUBLIC_SECRET_HEADER
             }
-            setIsLoadingTransaction(false)
-            return false
-        } catch (error: any) {
-            setIsLoadingTransaction(false)
+        })
+        setisLoading(false)
+        toast({
+            title: `Burn success`,
+            message: `Successfully burned YARI`,
+            type: "success"
+        })
+            return true
+        } catch (error) {
+            setisLoading(false)
             toast({
-                title: `Error sending transaction`,
-                message: `Try afain later`,
+                title: `Error sending transactiosn`,
+                message: `Please try again later`,
                 type: "error"
             })
-            localStorage.removeItem('transaction')
             return false
         }
 
     }
     return (
         <TransactionContext.Provider value={
-            { currentAccount, connectWallet, approveToken, burnToken, handleChange, formData, isLoading, isLoadingTransaction }
+            { bridgeToken, handleChange, formData, isLoading }
         }>
             {children}
         </TransactionContext.Provider>
     );
 };
-
-
-
+export const useStateContext = () => React.useContext(TransactionContext)

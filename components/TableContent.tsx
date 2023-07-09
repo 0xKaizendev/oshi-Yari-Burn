@@ -98,7 +98,7 @@ export default function TableContent({ data }: TableContentProps) {
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="name" className="text-left">
-                      Tape Route Address
+                      Taperoot address
                     </Label>
                     <Input id="name" value={selectedTransaction?.taproot_address || ""} onChange={handleChange} name="taproot_address" className="col-span-3" />
                   </div>
@@ -110,7 +110,7 @@ export default function TableContent({ data }: TableContentProps) {
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="username" className="text-left">
-                      Ordinal Id
+                      Inscription id
                     </Label>
                     <Input id="username" onChange={handleChange} value={selectedTransaction?.ordinal_inscription_id || ""} name="ordinal_inscription_id" className="col-span-3" />
                   </div>
