@@ -8,7 +8,6 @@ import { LucideLoader2 } from 'lucide-react';
 import { useContext } from 'react';
 export default function Home() {
   const { bridgeToken, handleChange, formData,isLoading } = useContext(TransactionContext)
-  console.log(isLoading)
   return (
     <main className="select-none flex flex-col  gap-3 md:gap-8   items-center justify-center">
       <Header >

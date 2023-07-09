@@ -1,17 +1,9 @@
 "use client"
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode } from 'react';
 import Image from 'next/image';
-// import { signIn } from 'next-auth/react';
-import { Button } from './ui/button';
 import Link from 'next/link';
-import { LucideLoader2 } from 'lucide-react';
 import logo from '@yaris/assets/logo.png'
-import { TransactionContext } from '@yaris/context/TransactionContext';
-interface HeaderProps {
-
-};
 export default function Header({children }:{children:ReactNode}) {
-  const { connectWallet, currentAccount, isLoading } = useContext(TransactionContext)
   return (
     <div className={`md:p-4 px-1 w-full flex justify-between items-center border-b-2 border-muted`}>
       <Link className='flex lg:w-1/4 items-end gap-2 justify-start  ' href='/'>
